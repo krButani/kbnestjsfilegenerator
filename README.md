@@ -2,7 +2,7 @@
 
 VS code extension to quickly create **NestJS files and directory** using **GUI** 
 
-![](images/demo.gif)
+![](https://github.com/krButani/kbnestjsfilegenerator/blob/main/images/demo.gif?raw=true)
 
 ## Features
 
