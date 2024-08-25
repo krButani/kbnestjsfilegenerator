@@ -1,0 +1,81 @@
+{
+  "name": "kbestjsfilegenerator",
+  "displayName": "KB Nest Js File Generator",
+  "description": "Nest Js file and folder generator with code using typescript.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kbNestJsFileGenerator.onlyFileGenerator",
+        "title": "Generate Only File and Directory"
+      },
+      {
+        "command": "kbNestJsFileGenerator.withCodeFileGenerator",
+        "title": "Generate File and Directory With Code"
+      },
+      {
+        "command": "kbNestJsFileGenerator.withCodeFileGeneratorKB",
+        "title": "Generate File and Directory With Code Only KB"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "kbNestJsFileGenerator.submenus",
+        "label": "KB Nest.js File Generator"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "submenu": "kbNestJsFileGenerator.submenus",
+          "when": "explorerResourceIsFolder",
+          "group": "1_groupOfSubmenu@10"
+        }
+      ],
+      "kbNestJsFileGenerator.submenus": [
+        {
+          "command": "kbNestJsFileGenerator.onlyFileGenerator",
+          "group": "0_makefileGenerator@001",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "kbNestJsFileGenerator.withCodeFileGenerator",
+          "group": "0_makefileGenerator@002",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "kbNestJsFileGenerator.withCodeFileGeneratorKB",
+          "group": "1_makefileGenerator@001",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.92.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0"
+  }
+}

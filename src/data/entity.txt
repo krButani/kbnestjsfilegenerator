@@ -1,0 +1,31 @@
+import {
+  Column,
+  Model,
+  Table,
+  DataType,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
+
+@Table({
+  tableName: '[SMPRO]',
+})
+export class [ModuleName] extends Model<[ModuleName]> {
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true,
+  })
+  id: string;
+
+  @CreatedAt
+  @Column({ field: 'created_at' })
+  createdAt: Date;
+
+  @UpdatedAt
+  @Column({ field: 'updated_at' })
+  updatedAt: Date;
+
+  @Column({ field: 'deleted_at' })
+  deletedAt: Date;
+}

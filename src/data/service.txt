@@ -1,0 +1,242 @@
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { [ModuleName] } from './../entity/[SMPRO].entity';
+import { [ModuleName]RequestDto } from './../dto/[SMPRO]Request.dto';
+import { ErrorMessageService } from './../../../shared/utils/errormessage.service';
+import { [ModuleName]Dto } from './../dto/[SMPRO].dto';
+import { StringService } from './../../../shared/utils/string.service';
+import { DateService } from './../../../shared/utils/dates.service';
+import { Op } from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
+import { [ModuleName]DeleteRequestDto } from './../dto/[SMPRO]DeleteRequest.dto';
+
+@Injectable()
+export class [ModuleName]Service {
+  constructor(
+    @Inject('SEQUELIZE')
+    private readonly sequlize: Sequelize,
+    @Inject('BrandRepository')
+    private readonly [SMPRO]Repository: typeof [ModuleName],
+  ) {}
+
+  async create(
+    requestDto: [ModuleName]RequestDto,
+    errorMessageService: ErrorMessageService,
+  ) {
+    try {
+        let data = {};
+        return new [ModuleName]Dto(data);
+      
+    } catch (err) {
+      throw errorMessageService.CatchHandler(err);
+    }
+  }
+  queryBuilder(req: any) {
+    let orderby = ' ORDER BY ';
+    if (req.order && req.order.length > 0) {
+      let order = '';
+      req.order.forEach((key: any) => {
+        if (order != '') order = ',';
+        order += key[0] + ' ' + key[1];
+      });
+      orderby += order;
+    } else orderby += 'id DESC ';
+
+    const limit = parseInt(req.length || 100);
+    let offset = req.start ?? 1;
+    offset = limit * (offset > 0 ? offset - 1 : 0);
+    const isSetLimit =
+      req.isServerSidePagination &&
+      (req.isServerSidePagination == 'true' ||
+        req.isServerSidePagination == true)
+        ? true
+        : false;
+    let lWhere = '';
+    const search = req.search;
+    if (search && search != '') {
+      let schema = {
+
+      };
+
+      Object.keys(schema).forEach((key) => {
+        if (key != 'id') {
+          if (lWhere != '') lWhere += ' OR ';
+          lWhere += ' ' + key + "::text ilike '%" + search + "%'";
+        }
+      });
+    }
+
+    if (lWhere != '') {
+      lWhere = '( ' + lWhere + ') ';
+    }
+    let Wts = '';
+
+    if (req.deleted != null && req.deleted == 'true') {
+      if (lWhere != '') Wts += ' AND ';
+
+      Wts += ' deleted_at IS NOT NULL ';
+    } else {
+      if (lWhere != '') Wts += ' AND ';
+      Wts += ' deleted_at IS  NULL ';
+    }
+
+    lWhere = lWhere + Wts;
+
+    let query = 'SELECT * FROM [SMPRO] ';
+    let count_query = 'SELECT count(*) FROM [SMPRO] ';
+    if (lWhere != '') {
+      query += ' WHERE ' + lWhere + ' ';
+      count_query += ' WHERE ' + lWhere + ' ';
+    }
+    if (orderby != '') {
+      query += orderby + ' ';
+    }
+
+    if (isSetLimit == true) {
+      query += ' LIMIT ' + limit + ' OFFSET ' + offset;
+    }
+
+    return { query: query, count_query: count_query };
+  }
+  async findAll(req: any, errorMessageService: ErrorMessageService) {
+    try {
+      const { query, count_query } = this.queryBuilder(req);
+      const [count, meta] = await this.sequlize.query(count_query, {
+        logging: errorMessageService.isLogged(),
+        raw: true,
+      });
+      const [results, metadata] = await this.sequlize.query(query, {
+        logging: errorMessageService.isLogged(),
+        raw: true,
+      });
+
+      return {
+        count:
+          count.length > 0 && count[0]['count'] != '' ? count[0]['count'] : 0,
+        data: results.map((brand) => new [ModuleName]Dto(brand)),
+      };
+    } catch (err) {
+      throw errorMessageService.CatchHandler(err);
+    }
+  }
+
+  async findOne(id: string, errorMessageService: ErrorMessageService) {
+    try {
+      const data = await this.[SMPRO]Repository.findOne({
+        where: { id: id, deletedAt: { [Op.not]: null } },
+      });
+      if (data) {
+        return new [ModuleName]Dto(data);
+      } else {
+        throw errorMessageService.GeneralError(
+          'notfound',
+          HttpStatus.NOT_FOUND,
+          { name: '[ModuleName]' },
+        );
+      }
+    } catch (err) {
+      throw errorMessageService.CatchHandler(err);
+    }
+  }
+
+  async update(
+    id: string,
+    requestDto: [ModuleName]RequestDto,
+    errorMessageService: ErrorMessageService,
+  ) {
+    
+
+    try {
+
+    let data = await this.[SMPRO]Repository.findOne<[ModuleName]>({
+            where: {
+                id: id,
+                deletedAt: { [Op.not]: null },
+            },
+    });
+        if (!data) {
+            throw errorMessageService.GeneralError('notfound', HttpStatus.NOT_FOUND, {
+                name: '[ModuleName]',
+            });
+        }
+    const stringService: StringService = new StringService();
+    const dateService: DateService = new DateService();
+      const dataSave = await [ModuleName].update(
+        {
+          updatedAt: dateService.getCurrentDBStoreDateTime(),
+        },
+        {
+          where: { id: id },
+          returning: true,
+        },
+      );
+      if (dataSave && dataSave.length > 1) {
+        const dataSaved = dataSave[1][0];
+        return new [ModuleName]Dto(dataSaved);
+      } else {
+        throw errorMessageService.GeneralError('unable_update', 200, {
+          name: '[SMPRO]',
+        });
+      }
+    } catch (err) {
+      throw errorMessageService.CatchHandler(err);
+    }
+  }
+
+  async delete(
+    id: string,
+    params: [ModuleName]DeleteRequestDto,
+    errorMessageService: ErrorMessageService,
+  ) {
+    try {
+      let data = await this.[SMPRO]Repository.findOne<[ModuleName]>({
+        where: {
+          id: id,
+        },
+      });
+      if (!data) {
+        throw errorMessageService.GeneralError(
+          'notfound',
+          HttpStatus.NOT_FOUND,
+          {
+            name: '[ModuleName]',
+          },
+        );
+      }
+
+      const dateService: DateService = new DateService();
+      let dataSaved = data;
+      if (params.is_soft_delete == 'false') {
+        const data = await this.[SMPRO]Repository.destroy({
+          where: { id: id },
+        });
+        if (!data) {
+          throw errorMessageService.GeneralError('unable_delete', 200, {
+            name: '[SMPRO]',
+          });
+        }
+      } else {
+        const dataSave = await [ModuleName].update(
+          {
+            deletedAt: dateService.getCurrentDBStoreDateTime(),
+          },
+          {
+            where: {
+              id: id,
+            },
+            returning: true,
+          },
+        );
+        if (dataSave && dataSave.length > 1) {
+          dataSaved = dataSave[1][0];
+        } else {
+          throw errorMessageService.GeneralError('unable_delete', 200, {
+            name: '[SMPRO]',
+          });
+        }
+      }
+      return new [ModuleName]Dto(dataSaved);
+    } catch (err) {
+      throw errorMessageService.CatchHandler(err);
+    }
+  }
+}

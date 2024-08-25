@@ -1,0 +1,122 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { AuthPermissionGuard } from './../../../guard/authpermission.guard';
+import { ErrorMessageService } from './../../../shared/utils/errormessage.service';
+import { [ModuleName]Service } from './../service/[SMPRO].service';
+import { [ModuleName]RequestDto } from './../dto/[SMPRO]Request.dto';
+import { [ModuleName]IDDto } from './../dto/[SMPRO]SingleId.dto';
+import { SuccResponseDto } from './../../../shared/dto/succresponse.dto';
+import { [ModuleName]DeleteRequestDto } from './../dto/[SMPRO]DeleteRequest.dto';
+
+@Controller('[ROUTE]')
+@UseGuards(AuthPermissionGuard)
+@ApiTags('[ROUTE]')
+export class [ModuleName]Controller {
+  constructor(
+    private readonly errorMessageService: ErrorMessageService,
+    private readonly [SMPRO]Service: [ModuleName]Service,
+  ) {}
+
+  @Post()
+  @ApiOkResponse({ type: SuccResponseDto })
+  async addPermissions(
+    @Body() requestDto: [ModuleName]RequestDto,
+  ): Promise<SuccResponseDto> {
+    try {
+      const data = await this.[SMPRO]Service.create(
+        requestDto,
+        this.errorMessageService,
+      );
+      return this.errorMessageService.success(data, true, 'add_data', {
+        name: '[ModuleName]',
+      });
+    } catch (err) {
+      throw this.errorMessageService.error(err);
+    }
+  }
+
+  @Get()
+  @ApiOkResponse({ type: SuccResponseDto })
+  async findAll(@Query() filters: any): Promise<SuccResponseDto> {
+    try {
+      const data = await this.[SMPRO]Service.findAll(
+        filters,
+        this.errorMessageService,
+      );
+      return this.errorMessageService.success(data, true, 'list_data', {
+        name: '[ModuleName]',
+      });
+    } catch (err) {
+      throw this.errorMessageService.error(err);
+    }
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: SuccResponseDto })
+  async findOne(
+    @Param('id') params: [ModuleName]IDDto,
+  ): Promise<SuccResponseDto> {
+    try {
+      const data = await this.[SMPRO]Service.findOne(
+        params.toString(),
+        this.errorMessageService,
+      );
+      return this.errorMessageService.success(data, true, 'single_data', {
+        name: '[ModuleName]',
+      });
+    } catch (err) {
+      throw this.errorMessageService.error(err);
+    }
+  }
+
+  @Put(':id')
+  @ApiOkResponse({ type: SuccResponseDto })
+  async update(
+    @Body() requestDto: [ModuleName]RequestDto,
+    @Param('id') id: [ModuleName]IDDto,
+  ): Promise<SuccResponseDto> {
+    try {
+      const data = await this.[SMPRO]Service.update(
+        id.toString(),
+        requestDto,
+        this.errorMessageService,
+      );
+      return this.errorMessageService.success(data, true, 'update_data', {
+        name: '[ModuleName]',
+      });
+    } catch (err) {
+      throw this.errorMessageService.error(err);
+    }
+  }
+
+  @Delete(':id')
+  @ApiOkResponse({ type: SuccResponseDto })
+  async delete(
+    @Param('id') id: [ModuleName]IDDto,
+    @Query() params: [ModuleName]DeleteRequestDto,
+  ): Promise<SuccResponseDto> {
+    try {
+      const data = await this.[SMPRO]Service.delete(
+        id.toString(),
+        params,
+        this.errorMessageService,
+      );
+
+      return this.errorMessageService.success(data, true, 'delete_data', {
+        name: '[ModuleName]',
+      });
+    } catch (err) {
+      throw this.errorMessageService.error(err);
+    }
+  }
+}
