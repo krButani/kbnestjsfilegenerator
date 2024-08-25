@@ -2,8 +2,9 @@
   "name": "kbestjsfilegenerator",
   "displayName": "KB Nest Js File Generator",
   "description": "Nest Js file and folder generator with code using typescript.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "krButani-kbnestjsfilegenerator",
+  "icon": "images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/krButani/kbnestjsfilegenerator"
