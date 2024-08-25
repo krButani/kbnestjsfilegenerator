@@ -16,6 +16,9 @@
     "color": "#21214c",
     "theme": "dark"
   },
+  
+  "pricing": "Free",
+
   "engines": {
     "vscode": "^1.92.0"
   },
