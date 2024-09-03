@@ -1,3 +1,0 @@
-import { [ModuleName] } from './../entity/[SMPRO].entity';
-
-export const [SMPRO]Providers = [{ provide: '[ModuleName]Repository', useValue: [ModuleName] }];

@@ -59,7 +59,7 @@ export class FilesHelpers {
 
   readFileAndReplace = (filename: string, moduleCap: string) => {
     const data = fs.readFileSync(
-      path.join(__dirname, "..", "..", "src", "data", filename),
+      path.join(__dirname, "..", "assets", filename),
       {
         encoding: "utf8"
       }

@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     async (resource: vscode.Uri) => {
       const path = resource.fsPath + "/";
 
-      messageHelper.info("Command Fired Success!");
+      //messageHelper.info("Command Fired Success!");
       G.FilesAndFolder(path, filesHelper, messageHelper);
     }
   );
@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
     async (resource: vscode.Uri) => {
       const path = resource.fsPath + "/";
 
-      messageHelper.info("Command Fired Success!");
+      //messageHelper.info("Command Fired Success!");
       G.FilesAndFolderWithData(path, filesHelper, messageHelper);
     }
   );
@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     async (resource: vscode.Uri) => {
       const path = resource.fsPath + "/";
 
-      messageHelper.info("Command Fired Success!");
+      // messageHelper.info("Command Fired Success!");
       G.FilesAndFolderWithDataKB(path, filesHelper, messageHelper);
     }
   );
